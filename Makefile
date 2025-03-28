@@ -7,4 +7,13 @@ stop-db:
 	docker-compose -f infra/dev/docker-compose.dev.yaml down
 
 run:
-	python -m uvicorn main:app --host 0.0.0.0 --port 8000
+	uvicorn app.main:app --reload
+
+pytest:
+	pytest
+
+start:
+	docker-compose -f infra/dev/docker-compose.dev.yaml up -d --build
+
+stop:
+	docker-compose -f infra/dev/docker-compose.dev.yaml down --volumes

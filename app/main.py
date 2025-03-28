@@ -5,12 +5,11 @@ from pathlib import Path
 from fastapi import FastAPI, APIRouter
 
 from app.core.config import settings
+from app.api.pagination import add_pagination
 
 
 app = FastAPI(
     title=settings.app_name,
-    docs_url=None,
-    redoc_url=None,
     openapi_url="/openapi.json",
 )
 
@@ -20,7 +19,7 @@ endpoint_path = Path(__file__).parent / "api" / "endpoints"
 
 template_path = Path(__file__).parent / "api" / "templates"
 
-for module_info in pkgutil.iter_modules([endpoint_path]):
+for module_info in pkgutil.iter_modules([str(endpoint_path)]):
     if not module_info.ispkg:
         module_name = module_info.name
         full_module_name = f"app.api.endpoints.{module_name}"
@@ -28,8 +27,8 @@ for module_info in pkgutil.iter_modules([endpoint_path]):
         if hasattr(module, "router"):
             api_router.include_router(module.router)
         else:
-            raise Exception(
-                f"Модуль {module_name} не имеет роутера."
-            )
+            raise Exception(f"Модуль {module_name} не имеет роутера.")
 
 app.include_router(api_router, prefix=settings.api_prefix)
+
+add_pagination(app)

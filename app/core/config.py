@@ -9,7 +9,8 @@ class Settings(BaseSettings):
     secret_key: str
     algorithm: str
     access_token_expire_minutes: int
-    refresh_token_expire_minutes: int
+    refresh_token_expire_days: int
+    api_prefix: str = "/api"
 
     model_config = {
         "env_file": ".env",
